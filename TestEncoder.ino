@@ -13,9 +13,9 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // encoder
-#define encoderPinA 5
-#define encoderPinB 6
-#define encoderPinC 7
+#define encoderPinA 5 // encoder A channel
+#define encoderPinB 6 // encoder B channel
+#define encoderPinC 7 // encoder button
 
 volatile long pos = 0;
 unsigned long t1;
@@ -82,7 +82,6 @@ void loop() {
 }
 
 void doEncoder() {
-  bool aggiorna = false;
   eB = digitalRead(encoderPinB);
   if (digitalRead(encoderPinA) != eA) {
     eA = !eA;
@@ -109,11 +108,6 @@ void doEncoder() {
   }
 }
 
-void go(int st) {
-  FIRST = true; 
-  stato = st;
-}
-
 void oledPrint(char *str) {
   display.clearDisplay();
   display.setTextSize(1);              // Normal 1:1 pixel scale
@@ -124,13 +118,18 @@ void oledPrint(char *str) {
   display.display();
 }
 
+void stateGo(int st) {
+  FIRST = true; 
+  stato = st;
+}
+
 void menu0() {
   if (FIRST) {
     Serial.println("menu 0");
     oledPrint("menu 0");
     FIRST = false; 
   }
-  if (UP) go(1);
+  if (UP) stateGo(1);
   //if (DN) go(1);
   if (CLIC) Serial.println("Selected 0");
 }
@@ -141,8 +140,8 @@ void menu1() {
     oledPrint("menu 1");
     FIRST = false; 
   }
-  if (UP) go(2);
-  if (DN) go(0);
+  if (UP) stateGo(2);
+  if (DN) stateGo(0);
   if (CLIC) Serial.println("Selected 1");
 }
 
@@ -152,8 +151,8 @@ void menu2() {
     oledPrint("menu 2");
     FIRST = false; 
   }
-  if (UP) go(3);
-  if (DN) go(1);
+  if (UP) stateGo(3);
+  if (DN) stateGo(1);
   if (CLIC) Serial.println("Selected 2");
 }
 
@@ -163,7 +162,7 @@ void menu3() {
     oledPrint("menu 3");
     FIRST = false; 
   }
-  //if (UP) go(0);
-  if (DN) go(2);
+  //if (UP) stateGo(0);
+  if (DN) stateGo(2);
   if (CLIC) Serial.println("Selected 3");
 }
